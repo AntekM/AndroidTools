@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import android.net.ConnectivityManager;
 
 import com.mysliborski.tools.exception.UnauthorizedAccessException;
+import com.mysliborski.tools.exception.WebServiceException;
 import com.mysliborski.tools.helper.IOHelper;
 import com.mysliborski.tools.helper.LogHelper;
 
@@ -80,7 +81,7 @@ public class HttpHelper {
                 String reply = new String(IOHelper.getInputStreamContent(entity.getContent()));
                 entity.consumeContent();
                 loge(null, concat("HTTPHelper : getAsInputStream. StatusCode: ", statusCode, ", reply: ", reply));
-                throw new ConnectionProblemException(statusCode);
+                throw new WebServiceException(statusCode);
 			}
         } catch (ServiceException e) {
             throw e;

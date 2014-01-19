@@ -2,6 +2,7 @@ package com.mysliborski.tools.helper;
 
 import com.mysliborski.tools.exception.ServiceException;
 import com.mysliborski.tools.exception.ServiceExceptionCodes;
+import com.mysliborski.tools.exception.UnknownException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,9 +33,13 @@ public class JsonHelper {
         }
     }
 
-    public static String getString(JSONObject obj, String name) throws JSONException {
+    public static String getString(JSONObject obj, String name) throws ServiceException {
         if (obj.has(name)) {
-            return obj.getString(name);
+            try {
+                return obj.getString(name);
+            } catch (JSONException e) {
+                throw new UnknownException(e);
+            }
         } else {
             return null;
         }
@@ -48,7 +53,7 @@ public class JsonHelper {
                 try {
                     return Integer.getInteger(obj.getString(name));
                 } catch (JSONException ex) {
-                    loge(ex, "Cannot convert value "+obj.get(name));
+                    loge(ex, "Cannot convert value " + obj.get(name));
                     return null;
                 }
             }
@@ -64,7 +69,7 @@ public class JsonHelper {
                 try {
                     return Long.getLong(obj.getString(name));
                 } catch (JSONException ex) {
-                    loge(ex, "Cannot convert value "+obj.get(name));
+                    loge(ex, "Cannot convert value " + obj.get(name));
                     return null;
                 }
             }
@@ -82,17 +87,18 @@ public class JsonHelper {
 
     /**
      * Converts to flat JSON object
+     *
      * @param objs - list of alterating keys and values
      * @return
      */
     public static JSONObject asJsonObject(Object... objs) throws ServiceException {
         HashMap<String, Object> stringObjectHashMap = new HashMap<String, Object>();
-        if (objs.length % 2 ==1) {
-            throw  new IllegalArgumentException("Must have even number of arguments");
+        if (objs.length % 2 == 1) {
+            throw new IllegalArgumentException("Must have even number of arguments");
         }
-        for (int i=0;i<objs.length/2;i++) {
-            String key = (String) objs[i*2];
-            Object val = objs[i*2+1];
+        for (int i = 0; i < objs.length / 2; i++) {
+            String key = (String) objs[i * 2];
+            Object val = objs[i * 2 + 1];
             stringObjectHashMap.put(key, val);
         }
         return asJsonObject(stringObjectHashMap);
@@ -110,4 +116,13 @@ public class JsonHelper {
         return jsonObject;
 
     }
+
+    public static boolean getBool(JSONObject obj, String name, boolean def) throws JSONException {
+        if (obj.has(name))
+            return obj.getBoolean(name);
+        else
+            return def;
+    }
+
+
 }
