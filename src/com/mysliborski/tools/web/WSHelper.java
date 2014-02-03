@@ -6,6 +6,8 @@ import com.mysliborski.tools.exception.ConnectionProblemException;
 import com.mysliborski.tools.exception.ServiceException;
 import com.mysliborski.tools.exception.ServiceExceptionCodes;
 import com.mysliborski.tools.helper.IOHelper;
+
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -29,8 +31,14 @@ public class WSHelper {
     }
 
     public String doGetRequest(final String url) throws ServiceException {
+        return doGetRequest(url, null);
+    }
+
+    public String doGetRequest(final String url, Header extraHeader) throws ServiceException {
         log(" doGet: " + url);
         HttpGet getRequest = new HttpGet(url);
+        if (extraHeader!=null)
+            getRequest.addHeader(extraHeader);
         HttpEntity response = httpHelper.initDownload(getRequest);
         try {
             try {
