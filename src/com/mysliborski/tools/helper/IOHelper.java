@@ -33,6 +33,7 @@ public class IOHelper {
                     }
                 } while (r > 0);
             } finally {
+                bfos.flush();
                 bfos.close();
                 if (closeInputStream)
                     bfin.close();
